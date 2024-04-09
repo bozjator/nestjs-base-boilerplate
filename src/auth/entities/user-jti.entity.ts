@@ -9,7 +9,6 @@ import {
   Default,
 } from 'sequelize-typescript';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { USER_ENV_PARAM_LENGTH } from '../other/user-environment';
 
 // Define type that maps entity attributes.
 type UserJtiEntityKeys = keyof UserJtiEntity;
@@ -17,7 +16,9 @@ export type UserJtiEntityProperties = {
   [K in UserJtiEntityKeys]?: UserJtiEntity[K] | null;
 };
 
-const LengthUserJti = {
+export const LENGTH_USER_JTI = {
+  platform: 20,
+  browser: 20,
   requestIp: 40,
 };
 
@@ -46,14 +47,14 @@ export class UserJtiEntity extends Model {
   userId: number;
 
   @AllowNull(false)
-  @Column(DataType.STRING(USER_ENV_PARAM_LENGTH))
+  @Column(DataType.STRING(LENGTH_USER_JTI.platform))
   platform: string;
 
   @AllowNull(false)
-  @Column(DataType.STRING(USER_ENV_PARAM_LENGTH))
+  @Column(DataType.STRING(LENGTH_USER_JTI.browser))
   browser: string;
 
   @AllowNull(false)
-  @Column(DataType.STRING(LengthUserJti.requestIp))
+  @Column(DataType.STRING(LENGTH_USER_JTI.requestIp))
   requestIp: string;
 }

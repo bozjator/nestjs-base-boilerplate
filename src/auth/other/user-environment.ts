@@ -1,10 +1,5 @@
 import { UAParser } from 'ua-parser-js';
 
-/**
- * Max length of a user environment parameter when storing it.
- */
-export const USER_ENV_PARAM_LENGTH = 20;
-
 export class UserEnvironment {
   platform: string;
   browser: string;

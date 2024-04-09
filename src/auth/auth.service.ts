@@ -6,14 +6,12 @@ import { Op } from 'sequelize';
 import ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import {
+  LENGTH_USER_JTI,
   USER_JTI_COLUMN,
   UserJtiEntity,
   UserJtiEntityProperties,
 } from './entities/user-jti.entity';
-import {
-  USER_ENV_PARAM_LENGTH,
-  UserEnvironment,
-} from './other/user-environment';
+import { UserEnvironment } from './other/user-environment';
 import { UserService } from 'src/modules/user/user.service';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { SharedFunctions } from 'src/shared/services/shared-functions';
@@ -47,13 +45,14 @@ export class AuthService {
     userEnv: UserEnvironment,
     requestIp: string,
   ): Promise<string> {
-    const platform = userEnv.platform.substring(0, USER_ENV_PARAM_LENGTH);
-    const browser = userEnv.browser.substring(0, USER_ENV_PARAM_LENGTH);
+    const platform = userEnv.platform.substring(0, LENGTH_USER_JTI.platform);
+    const browser = userEnv.browser.substring(0, LENGTH_USER_JTI.browser);
+    const reqIp = requestIp.substring(0, LENGTH_USER_JTI.requestIp);
     const newJti: UserJtiEntityProperties = {
       [USER_JTI_COLUMN.userId]: userId,
       [USER_JTI_COLUMN.platform]: platform,
       [USER_JTI_COLUMN.browser]: browser,
-      [USER_JTI_COLUMN.requestIp]: requestIp,
+      [USER_JTI_COLUMN.requestIp]: reqIp,
     };
     const createdJti = await this.userJtiEntity.create(newJti);
     return createdJti.jti;
