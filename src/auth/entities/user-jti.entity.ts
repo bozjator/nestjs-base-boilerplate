@@ -22,11 +22,13 @@ export const LENGTH_USER_JTI = {
   requestIp: 40,
 };
 
+const columnJti: keyof UserJtiEntity = 'jti';
 const columnUserId: keyof UserJtiEntity = 'userId';
 const columnPlatform: keyof UserJtiEntity = 'platform';
 const columnBrowser: keyof UserJtiEntity = 'browser';
 const columnRequestIp: keyof UserJtiEntity = 'requestIp';
 export const USER_JTI_COLUMN = {
+  jti: columnJti,
   userId: columnUserId,
   platform: columnPlatform,
   browser: columnBrowser,

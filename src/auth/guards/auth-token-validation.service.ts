@@ -34,7 +34,7 @@ export class AuthTokenValidationService {
         USER_JTI_COLUMN.platform,
         USER_JTI_COLUMN.browser,
       ],
-      where: { jti },
+      where: { [USER_JTI_COLUMN.jti]: jti },
     });
 
     if (jtiRecord) {
