@@ -4,7 +4,7 @@ import { FastifyRequest } from 'fastify';
 import { UserEnvironment } from '../other/user-environment';
 import { AppLoggerService } from 'src/logger/app-logger.service';
 import { LoggerInfoObject } from 'src/logger/models/logger-info-object.model';
-import { UserJtiColumn, UserJtiEntity } from '../entities/user-jti.entity';
+import { USER_JTI_COLUMN, UserJtiEntity } from '../entities/user-jti.entity';
 
 @Injectable()
 export class AuthTokenValidationService {
@@ -30,9 +30,9 @@ export class AuthTokenValidationService {
   ): Promise<boolean> {
     const jtiRecord = await this.userJtiEntity.findOne({
       attributes: [
-        UserJtiColumn.userId,
-        UserJtiColumn.platform,
-        UserJtiColumn.browser,
+        USER_JTI_COLUMN.userId,
+        USER_JTI_COLUMN.platform,
+        USER_JTI_COLUMN.browser,
       ],
       where: { jti },
     });

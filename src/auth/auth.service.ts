@@ -6,6 +6,7 @@ import { Op } from 'sequelize';
 import ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import {
+  USER_JTI_COLUMN,
   UserJtiEntity,
   UserJtiEntityProperties,
 } from './entities/user-jti.entity';
@@ -46,11 +47,13 @@ export class AuthService {
     userEnv: UserEnvironment,
     requestIp: string,
   ): Promise<string> {
+    const platform = userEnv.platform.substring(0, USER_ENV_PARAM_LENGTH);
+    const browser = userEnv.browser.substring(0, USER_ENV_PARAM_LENGTH);
     const newJti: UserJtiEntityProperties = {
-      userId,
-      platform: userEnv.platform.substring(0, USER_ENV_PARAM_LENGTH),
-      browser: userEnv.browser.substring(0, USER_ENV_PARAM_LENGTH),
-      requestIp,
+      [USER_JTI_COLUMN.userId]: userId,
+      [USER_JTI_COLUMN.platform]: platform,
+      [USER_JTI_COLUMN.browser]: browser,
+      [USER_JTI_COLUMN.requestIp]: requestIp,
     };
     const createdJti = await this.userJtiEntity.create(newJti);
     return createdJti.jti;

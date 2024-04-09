@@ -24,10 +24,12 @@ const LengthUserJti = {
 const columnUserId: keyof UserJtiEntity = 'userId';
 const columnPlatform: keyof UserJtiEntity = 'platform';
 const columnBrowser: keyof UserJtiEntity = 'browser';
-export const UserJtiColumn = {
+const columnRequestIp: keyof UserJtiEntity = 'requestIp';
+export const USER_JTI_COLUMN = {
   userId: columnUserId,
   platform: columnPlatform,
   browser: columnBrowser,
+  requestIp: columnRequestIp,
 };
 
 @Table({ tableName: 'user_jti' })
