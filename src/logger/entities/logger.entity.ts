@@ -7,7 +7,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-const LengthLogger = {
+const LENGTH_LOGGER = {
   level: 10,
   requestIp: 40,
   requestMethod: 10,
@@ -23,7 +23,7 @@ export type LoggerEntityProperties = {
 export class LoggerEntity extends Model {
   @Index
   @AllowNull
-  @Column(DataType.STRING(LengthLogger.level))
+  @Column(DataType.STRING(LENGTH_LOGGER.level))
   level: string;
 
   @Index
@@ -54,12 +54,12 @@ export class LoggerEntity extends Model {
 
   @Index
   @AllowNull
-  @Column(DataType.STRING(LengthLogger.requestIp))
+  @Column(DataType.STRING(LENGTH_LOGGER.requestIp))
   requestIp: string;
 
   @Index
   @AllowNull
-  @Column(DataType.STRING(LengthLogger.requestMethod))
+  @Column(DataType.STRING(LENGTH_LOGGER.requestMethod))
   requestMethod: string;
 
   @Index
