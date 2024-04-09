@@ -7,12 +7,12 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import * as bcrypt from 'bcryptjs';
 import {
-  UserColumn,
+  USER_COLUMN,
   UserEntity,
   UserEntityProperties,
 } from './entities/user.entity';
 import {
-  UserRoleColumn,
+  USER_ROLE_COLUMN,
   UserRoleEntity,
   UserRoleEntityProperties,
 } from './entities/user-role.entity';
@@ -84,7 +84,7 @@ export class UserService {
    * @returns User object or null.
    */
   async findUserByEmail(email: string): Promise<UserEntity | null> {
-    const where = { [UserColumn.email]: email };
+    const where = { [USER_COLUMN.email]: email };
     return await this.findUserWhere(where);
   }
 
@@ -97,9 +97,9 @@ export class UserService {
    */
   async updateUser(userId: number, userUpdate: UserUpdate): Promise<number> {
     const userData: UserEntityProperties = {
-      firstName: userUpdate.firstName,
-      lastName: userUpdate.lastName,
-      email: userUpdate.email,
+      [USER_COLUMN.firstName]: userUpdate.firstName,
+      [USER_COLUMN.lastName]: userUpdate.lastName,
+      [USER_COLUMN.email]: userUpdate.email,
     };
     const affectedCount = await this.userEntity.update(userData, {
       where: { id: userId },
@@ -121,7 +121,7 @@ export class UserService {
     const transaction = await this.sequelize.transaction();
     try {
       const currentRoles: UserRoleEntity[] = await this.userRoleEntity.findAll({
-        where: { [UserRoleColumn.userId]: userId },
+        where: { [USER_ROLE_COLUMN.userId]: userId },
         raw: true,
         transaction,
       });
@@ -137,9 +137,9 @@ export class UserService {
       );
       const toAdd: UserRoleEntityProperties[] = rolesToAdd.map(
         (r): UserRoleEntityProperties => ({
-          userId: userId,
-          section: r.section,
-          permission: r.permission,
+          [USER_ROLE_COLUMN.userId]: userId,
+          [USER_ROLE_COLUMN.section]: r.section,
+          [USER_ROLE_COLUMN.permission]: r.permission,
         }),
       );
 
@@ -179,10 +179,10 @@ export class UserService {
     if (existingUser) throw new ConflictException(AuthMessages.USER_EXISTS);
 
     const newUser: UserEntityProperties = {
-      firstName: userReg.firstName,
-      lastName: userReg.lastName,
-      email: userReg.email,
-      password: this.getPasswordHash(userReg.password),
+      [USER_COLUMN.firstName]: userReg.firstName,
+      [USER_COLUMN.lastName]: userReg.lastName,
+      [USER_COLUMN.email]: userReg.email,
+      [USER_COLUMN.password]: this.getPasswordHash(userReg.password),
     };
     const user = await this.userEntity.create(newUser);
 
@@ -199,7 +199,7 @@ export class UserService {
   async changeUserPassword(userId: number, newPassword: string) {
     const password = this.getPasswordHash(newPassword);
     const affectedCount = await this.userEntity.update(
-      { password },
+      { [USER_COLUMN.password]: password },
       { where: { id: userId } },
     );
     return affectedCount[0];

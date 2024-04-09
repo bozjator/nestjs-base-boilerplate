@@ -17,8 +17,12 @@ export type UserRoleEntityProperties = {
 };
 
 const columnUserId: keyof UserRoleEntity = 'userId';
-export const UserRoleColumn = {
+const columnSection: keyof UserRoleEntity = 'section';
+const columnPermission: keyof UserRoleEntity = 'permission';
+export const USER_ROLE_COLUMN = {
   userId: columnUserId,
+  section: columnSection,
+  permission: columnPermission,
 };
 
 @Table({

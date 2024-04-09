@@ -14,9 +14,13 @@ export type UserEntityProperties = {
   [K in UserEntityKeys]?: UserEntity[K] | null;
 };
 
+const columnFirstName: keyof UserEntity = 'firstName';
+const columnLastName: keyof UserEntity = 'lastName';
 const columnEmail: keyof UserEntity = 'email';
 const columnPassword: keyof UserEntity = 'password';
-export const UserColumn = {
+export const USER_COLUMN = {
+  firstName: columnFirstName,
+  lastName: columnLastName,
   email: columnEmail,
   password: columnPassword,
 };
