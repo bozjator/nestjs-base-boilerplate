@@ -22,7 +22,7 @@ import { UserRegistration } from 'src/auth/dtos/user-registration.dto';
 import { ApiMessages } from 'src/shared/constants';
 import { AuthMessages } from 'src/auth/other/auth-constants';
 import { MessageHelper } from 'src/shared/services/message-helper';
-import { SharedFunctions } from 'src/shared/services/shared-functions';
+import { RoleUtils } from 'src/auth/role/role-utils';
 import { RoleSectionHelper } from 'src/auth/role/role-section';
 import { RolePermissionHelper } from 'src/auth/role/role-permission';
 
@@ -121,7 +121,7 @@ export class UserService {
   ): Promise<boolean> {
     await this.verifyUserExistence(userId);
 
-    const stringifyRole = SharedFunctions.stringifyRole;
+    const stringifyRole = RoleUtils.stringifyRole;
 
     const transaction = await this.sequelize.transaction();
     try {

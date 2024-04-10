@@ -14,10 +14,10 @@ import {
 import { UserEnvironment } from './other/user-environment';
 import { UserService } from 'src/modules/user/user.service';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { SharedFunctions } from 'src/shared/services/shared-functions';
 import { LoginSuccess } from './dtos/login-success.dto';
 import { AccessTokenPayload } from './dtos/access-token-payload.dto';
 import { AuthMessages } from './other/auth-constants';
+import { RoleUtils } from './role/role-utils';
 import { Roles } from './dtos/roles.dto';
 import { RoleSection } from './role/role-section';
 import { RolePermission } from './role/role-permission';
@@ -130,7 +130,7 @@ export class AuthService {
       sub: user.id,
       jti,
       given_name: user.firstName,
-      roles: user.roles.map((role) => SharedFunctions.stringifyRole(role)),
+      roles: user.roles.map((role) => RoleUtils.stringifyRole(role)),
     };
     const token = this.jwtService.sign(payload);
     return { access_token: token };
