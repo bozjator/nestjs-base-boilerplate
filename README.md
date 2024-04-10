@@ -39,10 +39,10 @@ JWT refresh token strategy is not implemented.
 
 When you use `@AuthUser` decorator with a role, e.g. `@AuthUser(RoleSection.all, RolePermission.manage)`, swagger document will show, under the responses section, the required role as `403 Forbidden (required role: all.manage)`.
 
-To add new sections and permissions for user roles:
+To add new section or permission for user role:
 
-- add new values to the enums `RoleSection` & `RolePermission` and
-- add mapping, enum value to number, to `roleSectionMap` & `rolePermissionMap`.
+- add new value to the enum `RoleSection` or `RolePermission` and
+- add mapping, enum value to number, to `roleSectionMap` or `rolePermissionMap`.
 
 We need to map enum values to numbers because we store role section and permission as a number in database.
 If we would store them as enum, we would need to update table schema every time when new section or permission value is added to the enum.  
