@@ -19,8 +19,8 @@ import { LoginSuccess } from './dtos/login-success.dto';
 import { AccessTokenPayload } from './dtos/access-token-payload.dto';
 import { AuthMessages } from './other/auth-constants';
 import { Roles } from './dtos/roles.dto';
-import { RoleSection } from './models/role-section.enum';
-import { RolePermission } from './models/role-permission.enum';
+import { RoleSection } from './role/role-section';
+import { RolePermission } from './role/role-permission';
 import AppConfig from '../config/app.config';
 
 @Injectable()
@@ -130,7 +130,7 @@ export class AuthService {
       sub: user.id,
       jti,
       given_name: user.firstName,
-      roles: user.roles.map((role) => SharedFunctions.roleToString(role)),
+      roles: user.roles.map((role) => SharedFunctions.stringifyRole(role)),
     };
     const token = this.jwtService.sign(payload);
     return { access_token: token };

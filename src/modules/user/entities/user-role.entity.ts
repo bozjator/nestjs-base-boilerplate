@@ -7,8 +7,6 @@ import {
   DataType,
 } from 'sequelize-typescript';
 import { UserEntity } from './user.entity';
-import { RoleSection } from 'src/auth/models/role-section.enum';
-import { RolePermission } from 'src/auth/models/role-permission.enum';
 
 // Define type that maps entity attributes.
 type UserRoleEntityKeys = keyof UserRoleEntity;
@@ -35,10 +33,10 @@ export class UserRoleEntity extends Model {
   userId: number;
 
   @AllowNull(false)
-  @Column(DataType.ENUM({ values: Object.keys(RoleSection) }))
-  section: string;
+  @Column(DataType.TINYINT.UNSIGNED)
+  section: number;
 
   @AllowNull(false)
-  @Column(DataType.ENUM({ values: Object.keys(RolePermission) }))
-  permission: string;
+  @Column(DataType.TINYINT.UNSIGNED)
+  permission: number;
 }

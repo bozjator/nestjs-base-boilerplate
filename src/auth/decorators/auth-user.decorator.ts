@@ -4,8 +4,8 @@ import {
   ApiForbiddenResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { RoleSection } from '../models/role-section.enum';
-import { RolePermission } from '../models/role-permission.enum';
+import { RoleSection } from '../role/role-section';
+import { RolePermission } from '../role/role-permission';
 import { AuthGuardJwt } from '../guards/auth-jwt.guard';
 
 export const ROLE_SECTION_KEY = 'role_section';

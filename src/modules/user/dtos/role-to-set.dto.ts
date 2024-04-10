@@ -1,8 +1,8 @@
 import { ApiPropertyEnum } from 'src/shared/decorators/api-property-enum.decorator';
-import { RoleSection } from 'src/auth/models/role-section.enum';
-import { RolePermission } from 'src/auth/models/role-permission.enum';
+import { RoleSection } from 'src/auth/role/role-section';
+import { RolePermission } from 'src/auth/role/role-permission';
 
-export class RoleToAdd {
+export class RoleToSet {
   @ApiPropertyEnum(RoleSection, 'section')
   section: string;
 

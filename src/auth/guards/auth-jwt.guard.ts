@@ -14,8 +14,8 @@ import { UserInRequest } from '../models/user-in-request.model';
 import { authStrategyJwtName } from '../strategies/auth-jwt.strategy';
 import { getUserEnvironment } from '../other/user-environment';
 import { AuthTokenValidationService } from './auth-token-validation.service';
-import { RoleSection } from '../models/role-section.enum';
-import { RolePermission } from '../models/role-permission.enum';
+import { RoleSection } from '../role/role-section';
+import { RolePermission } from '../role/role-permission';
 
 @Injectable()
 export class AuthGuardJwt extends AuthGuard(authStrategyJwtName) {

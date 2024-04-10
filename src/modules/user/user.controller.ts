@@ -29,9 +29,9 @@ import { UserService } from './user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { UserInRequest } from 'src/auth/models/user-in-request.model';
 import { UserUpdate } from './dtos/user-update.dto';
-import { RoleToAdd } from './dtos/role-to-add.dto';
-import { RoleSection } from 'src/auth/models/role-section.enum';
-import { RolePermission } from 'src/auth/models/role-permission.enum';
+import { RoleToSet } from './dtos/role-to-set.dto';
+import { RoleSection } from 'src/auth/role/role-section';
+import { RolePermission } from 'src/auth/role/role-permission';
 
 @ApiTags('user')
 @Controller('user')
@@ -72,7 +72,7 @@ export class UserController {
     summary: 'Update user roles.',
     description: ApiMessages.DESCRIPTION_UPDATE_USER_ROLES,
   })
-  @ApiBody({ type: [RoleToAdd] })
+  @ApiBody({ type: [RoleToSet] })
   @ApiOkResponse({ description: 'Roles updated' })
   @ApiBadRequestResponse({ description: ApiMessages.INVALID_DATA })
   @ApiNotFoundResponse({
@@ -88,7 +88,7 @@ export class UserController {
   @Put(':id/roles')
   async updateUserRoles(
     @Param('id', ParseIntPipe) userId: number,
-    @Body(new ParseArrayPipe({ items: RoleToAdd })) roles: RoleToAdd[],
+    @Body(new ParseArrayPipe({ items: RoleToSet })) roles: RoleToSet[],
     @ReqUser() currentUser: UserInRequest,
   ) {
     // User with role all.manage (needed to access this endpoint) cannot edit himself.
@@ -98,7 +98,7 @@ export class UserController {
 
     // Check if any role has duplicated section.
     // E.g.products.read and products.manage.
-    const hasSameSection = (roleA: RoleToAdd, roleB: RoleToAdd) =>
+    const hasSameSection = (roleA: RoleToSet, roleB: RoleToSet) =>
       roleA.section === roleB.section;
     const rolesHasDuplicates = roles.some((roleA, indexA) =>
       roles.some(

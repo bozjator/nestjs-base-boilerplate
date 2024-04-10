@@ -17,12 +17,14 @@ import {
   UserRoleEntityProperties,
 } from './entities/user-role.entity';
 import { UserUpdate } from './dtos/user-update.dto';
-import { RoleToAdd } from './dtos/role-to-add.dto';
+import { RoleToSet } from './dtos/role-to-set.dto';
 import { UserRegistration } from 'src/auth/dtos/user-registration.dto';
 import { ApiMessages } from 'src/shared/constants';
 import { AuthMessages } from 'src/auth/other/auth-constants';
 import { MessageHelper } from 'src/shared/services/message-helper';
 import { SharedFunctions } from 'src/shared/services/shared-functions';
+import { RoleSectionHelper } from 'src/auth/role/role-section';
+import { RolePermissionHelper } from 'src/auth/role/role-permission';
 
 @Injectable()
 export class UserService {
@@ -111,12 +113,15 @@ export class UserService {
    * Updates user roles.
    *
    * @param userId User id for which roles will be updated.
-   * @param roles Roles to add or preserve, the rest will be removed.
+   * @param rolesToSet Roles to add or preserve, the rest will be removed.
    */
-  async updateUserRoles(userId: number, roles: RoleToAdd[]): Promise<boolean> {
+  async updateUserRoles(
+    userId: number,
+    rolesToSet: RoleToSet[],
+  ): Promise<boolean> {
     await this.verifyUserExistence(userId);
 
-    const roleToString = SharedFunctions.roleToString;
+    const stringifyRole = SharedFunctions.stringifyRole;
 
     const transaction = await this.sequelize.transaction();
     try {
@@ -127,38 +132,39 @@ export class UserService {
       });
 
       const currentRolesAsString: string[] = currentRoles.map((r) =>
-        roleToString(r),
+        stringifyRole(r),
       );
-      const rolesAsString: string[] = roles.map((r) => roleToString(r));
+      const rolesToSetAsString: string[] = rolesToSet.map((r) =>
+        stringifyRole(r),
+      );
 
       // Prepare roles to add.
-      const rolesToAdd: RoleToAdd[] = roles.filter(
-        (nr) => !currentRolesAsString.includes(roleToString(nr)),
+      const newRolesToAdd: RoleToSet[] = rolesToSet.filter(
+        (nr) => !currentRolesAsString.includes(stringifyRole(nr)),
       );
-      const toAdd: UserRoleEntityProperties[] = rolesToAdd.map(
+      const rolesToAdd: UserRoleEntityProperties[] = newRolesToAdd.map(
         (r): UserRoleEntityProperties => ({
           [USER_ROLE_COLUMN.userId]: userId,
-          [USER_ROLE_COLUMN.section]: r.section,
-          [USER_ROLE_COLUMN.permission]: r.permission,
+          [USER_ROLE_COLUMN.section]: RoleSectionHelper.getNumber(r.section),
+          [USER_ROLE_COLUMN.permission]: RolePermissionHelper.getNumber(
+            r.permission,
+          ),
         }),
       );
 
       // Prepare roles to remove.
       const rolesToRemove: UserRoleEntity[] = currentRoles.filter(
-        (cr) => !rolesAsString.includes(roleToString(cr)),
+        (cr) => !rolesToSetAsString.includes(stringifyRole(cr)),
       );
-      const rolesIdsToRemove: number[] = rolesToRemove.map((r) => r.id);
 
       // Update roles.
-      if (toAdd.length > 0) {
-        await this.userRoleEntity.bulkCreate(toAdd, { transaction });
-      }
-      if (rolesIdsToRemove.length > 0) {
+      if (rolesToAdd.length > 0)
+        await this.userRoleEntity.bulkCreate(rolesToAdd, { transaction });
+      if (rolesToRemove.length > 0)
         await this.userRoleEntity.destroy({
-          where: { id: rolesIdsToRemove },
+          where: { id: rolesToRemove.map((r) => r.id) },
           transaction,
         });
-      }
 
       await transaction.commit();
       return true;
