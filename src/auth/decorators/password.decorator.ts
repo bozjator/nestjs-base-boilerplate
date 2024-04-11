@@ -9,7 +9,7 @@ import { MinLength, MaxLength } from 'class-validator';
  */
 export function Password() {
   const minLength = 8;
-  const maxLength = 88;
+  const maxLength = 50;
   return applyDecorators(
     MinLength(minLength),
     MaxLength(maxLength),
