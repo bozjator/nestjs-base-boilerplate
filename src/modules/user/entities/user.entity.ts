@@ -5,6 +5,7 @@ import {
   AllowNull,
   HasMany,
   Unique,
+  DataType,
 } from 'sequelize-typescript';
 import { UserRoleEntity } from './user-role.entity';
 
@@ -12,6 +13,13 @@ import { UserRoleEntity } from './user-role.entity';
 type UserEntityKeys = keyof UserEntity;
 export type UserEntityProperties = {
   [K in UserEntityKeys]?: UserEntity[K] | null;
+};
+
+export const LENGTH_USER = {
+  firstName: 50,
+  lastName: 50,
+  email: 100,
+  password: 60,
 };
 
 const columnFirstName: keyof UserEntity = 'firstName';
@@ -28,20 +36,20 @@ export const USER_COLUMN = {
 @Table({ tableName: 'user' })
 export class UserEntity extends Model {
   @AllowNull(false)
-  @Column
+  @Column(DataType.STRING(LENGTH_USER.firstName))
   firstName: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.STRING(LENGTH_USER.lastName))
   lastName: string;
 
   @Unique
   @AllowNull(false)
-  @Column
+  @Column(DataType.STRING(LENGTH_USER.email))
   email: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.STRING(LENGTH_USER.password))
   password: string;
 
   @HasMany(() => UserRoleEntity)
