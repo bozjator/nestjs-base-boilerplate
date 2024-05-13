@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/modules/user/dtos/user.dto';
 
 export class LoginSuccess {
   @ApiProperty()
-  access_token: string;
+  accessToken: string;
+
+  @ApiProperty()
+  user: User;
 }

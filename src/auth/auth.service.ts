@@ -14,6 +14,7 @@ import {
 import { UserEnvironment } from './other/user-environment';
 import { UserService } from 'src/modules/user/user.service';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { User } from 'src/modules/user/dtos/user.dto';
 import { LoginSuccess } from './dtos/login-success.dto';
 import { AccessTokenPayload } from './dtos/access-token-payload.dto';
 import { AuthMessages } from './other/auth-constants';
@@ -133,7 +134,7 @@ export class AuthService {
       roles: user.roles.map((role) => RoleUtils.stringifyRole(role)),
     };
     const token = this.jwtService.sign(payload);
-    return { access_token: token };
+    return { accessToken: token, user: new User(user) };
   }
 
   /**
