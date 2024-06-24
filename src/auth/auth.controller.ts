@@ -103,16 +103,16 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Check password for the current user.' })
-  @ApiOkResponse({ description: AuthMessages.PASSWORD_VALID })
+  @ApiOkResponse({ description: AuthMessages.PASSWORD_CHECK })
   @HttpCode(200)
   @AuthUser()
   @Post('check-password')
   async checkPassword(
     @Body() password: CurrentPassword,
     @ReqUser() user: UserInRequest,
-  ) {
+  ): Promise<boolean> {
     const passwordToCheck = password.currentPassword;
-    await this.authService.authUserPassword(user.id, passwordToCheck);
+    return await this.authService.checkUserPassword(user.id, passwordToCheck);
   }
 
   @ApiOperation({

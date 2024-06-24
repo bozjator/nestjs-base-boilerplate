@@ -1,6 +1,6 @@
 export enum AuthMessages {
   USER_EXISTS = 'User already exists',
-  PASSWORD_VALID = 'Password is valid.',
+  PASSWORD_CHECK = 'Returns true if current password is valid, false otherwise.',
   PASSWORD_NOT_VALID = 'User current password not valid',
   AUTH_FAILD = 'User credentials not valid or user not found',
   AUTH_SUCCESSFUL = 'Authentication successful and JWT access token returned',

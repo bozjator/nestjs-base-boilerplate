@@ -181,6 +181,18 @@ export class AuthService {
   }
 
   /**
+   * Checks if given password is valid for given user id.
+   *
+   * @param userId User for which password needs to be checked.
+   * @param password Password to check.
+   * @returns True if password is valid, false otherwise.
+   */
+  async checkUserPassword(userId: number, password: string) {
+    const userValid = !!(await this.validateUser(password, { userId }));
+    return userValid;
+  }
+
+  /**
    * Get all possible roles.
    *
    * @returns Object with list of roles (sections and permissions).
