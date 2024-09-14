@@ -35,21 +35,24 @@ export class CatchExceptions implements ExceptionFilter {
       responseBody = exception.getResponse();
     }
 
-    this.logger.error(
-      new LoggerInfoObject({
-        context: CatchExceptions.name,
-        info: `Exception ${httpStatus}. ${exception.message}`,
-        errorStack: exception.stack,
-        request: {
-          ip: request?.ip,
-          url: request?.url,
-          method: request?.method,
-          headers: request?.headers,
-          body: request?.body,
-        },
-        response: responseBody,
-      }),
-    );
+    // Do not log 404, because there is too many of them,
+    // because of crawlers trying to access random stuff.
+    if (httpStatus !== HttpStatus.NOT_FOUND)
+      this.logger.error(
+        new LoggerInfoObject({
+          context: CatchExceptions.name,
+          info: `Exception ${httpStatus}. ${exception.message}`,
+          errorStack: exception.stack,
+          request: {
+            ip: request?.ip,
+            url: request?.url,
+            method: request?.method,
+            headers: request?.headers,
+            body: request?.body,
+          },
+          response: responseBody,
+        }),
+      );
 
     response.status(httpStatus).send(responseBody);
   }
