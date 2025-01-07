@@ -8,8 +8,8 @@ import { RoleSection } from '../role/role-section';
 import { RolePermission } from '../role/role-permission';
 import { AuthGuardJwt } from '../guards/auth-jwt.guard';
 
-export const ROLE_SECTION_KEY = 'role_section';
-export const ROLE_PERMISSION_KEY = 'role_permission';
+export const META_KEY_ROLE_SECTION = 'role_section';
+export const META_KEY_ROLE_PERMISSION = 'role_permission';
 
 /**
  * Creates list of decorators for authorization for given role.
@@ -31,8 +31,8 @@ export function getAuthorizationDecorators(
   }
 
   const decorators: any = [
-    SetMetadata(ROLE_SECTION_KEY, roleSection),
-    SetMetadata(ROLE_PERMISSION_KEY, rolePermission),
+    SetMetadata(META_KEY_ROLE_SECTION, roleSection),
+    SetMetadata(META_KEY_ROLE_PERMISSION, rolePermission),
   ];
 
   if (roleSection !== undefined) {

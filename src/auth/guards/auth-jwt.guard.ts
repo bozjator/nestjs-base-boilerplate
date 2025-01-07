@@ -7,8 +7,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import {
-  ROLE_PERMISSION_KEY,
-  ROLE_SECTION_KEY,
+  META_KEY_ROLE_PERMISSION,
+  META_KEY_ROLE_SECTION,
 } from '../decorators/auth-user.decorator';
 import { UserInRequest } from '../models/user-in-request.model';
 import { authStrategyJwtName } from '../strategies/auth-jwt.strategy';
@@ -38,11 +38,11 @@ export class AuthGuardJwt extends AuthGuard(authStrategyJwtName) {
     user: UserInRequest,
   ): boolean {
     const requiredSection = this.reflector.getAllAndOverride<RoleSection>(
-      ROLE_SECTION_KEY,
+      META_KEY_ROLE_SECTION,
       [context.getHandler(), context.getClass()],
     );
     const requiredPermission = this.reflector.getAllAndOverride<RolePermission>(
-      ROLE_PERMISSION_KEY,
+      META_KEY_ROLE_PERMISSION,
       [context.getHandler(), context.getClass()],
     );
 
