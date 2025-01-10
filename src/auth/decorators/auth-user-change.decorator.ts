@@ -15,7 +15,7 @@ import { RolePermission } from '../role/role-permission';
  * apply metadata for authorization (no actual authorization decorators will be
  * added, this is done by AuthUser decorator).
  */
-export function AuthUserChanage(
+export function AuthUserChange(
   roleSection: RoleSection,
   rolePermission: RolePermission,
 ) {

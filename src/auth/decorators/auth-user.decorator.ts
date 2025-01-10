@@ -15,7 +15,7 @@ export const META_KEY_ROLE_PERMISSION = 'role_permission';
  * Creates list of decorators for authorization for given role.
  *
  * NOTE: do not use it directly, it is only intended for use by AuthUser and
- * AuthUserChanage, because it will not apply decorators for triggering
+ * AuthUserChange, because it will not apply decorators for triggering
  * authorization.
  *
  * @param roleSection Role section needed to access a resource.
@@ -57,7 +57,7 @@ export function getAuthorizationDecorators(
  *
  * WARNING: if you use this decorator on class level, do not use it again on
  * function level to change the role permission, because then authentication
- * and authorization will happen twice. Instead use the AuthUserChanage
+ * and authorization will happen twice. Instead use the AuthUserChange
  * decorator to change role permission on function level.
  *
  * @param roleSection Role section needed to access a resource.
