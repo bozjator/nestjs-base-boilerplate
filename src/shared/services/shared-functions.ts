@@ -3,6 +3,6 @@ export class SharedFunctions {
     // When using nginx, request ip will be stored in 'x-forwarded-for' header.
     return request && request.headers && request.headers['x-forwarded-for']
       ? request.headers['x-forwarded-for']
-      : null || request?.ip;
+      : request?.ip || null;
   }
 }
