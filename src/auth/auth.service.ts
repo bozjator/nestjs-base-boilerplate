@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Op } from 'sequelize';
-import ms from 'ms';
+import ms, { StringValue } from 'ms';
 import * as bcrypt from 'bcryptjs';
 import {
   LENGTH_USER_JTI,
@@ -100,7 +100,7 @@ export class AuthService {
    * @param userId User id for which expired jtis should be deleted.
    */
   async deleteExpiredJtis(userId: number): Promise<void> {
-    const jwtExpiresInMs = ms(this.appConfig.jwt_expires_in);
+    const jwtExpiresInMs = ms(this.appConfig.jwt_expires_in as StringValue);
     const currentDateAsMs = Date.now();
     const createdBeforeDateAsMs = currentDateAsMs - jwtExpiresInMs;
     // If jti was created before this date, it should be deleted.

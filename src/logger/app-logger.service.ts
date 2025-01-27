@@ -61,13 +61,13 @@ export class AppLoggerService {
   };
 
   private getFormatedConsoleLog(data: winston.Logform.TransformableInfo) {
-    const dateTime = new Date(data.timestamp);
+    const dateTime = new Date(data.timestamp as string);
     const timestamp = new Intl.DateTimeFormat('sl', {
       dateStyle: 'short',
       timeStyle: 'medium',
     }).format(dateTime);
 
-    const messageData: LoggerInfoObject = data.message;
+    const messageData: LoggerInfoObject = data.message as any;
     const context = this.color.yellow(`[${messageData.context}]`);
 
     const errorStack = messageData.errorStack

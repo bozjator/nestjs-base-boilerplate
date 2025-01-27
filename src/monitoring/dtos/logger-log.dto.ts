@@ -6,7 +6,7 @@ class LoggerLogReponse {
   statusCode: number;
 
   @ApiProperty({
-    type: 'string | string[]',
+    oneOf: [{ type: 'string' }, { type: 'string[]' }],
     example: `Single string e.g. 'Error info' OR array of strings e.g. ['Error info 1', 'Error info 2']`,
   })
   message: string | string[];
@@ -29,7 +29,7 @@ class LoggerLogRequest {
   headers: object;
 
   @ApiPropertyOptional({
-    type: 'object | object[] | unknown',
+    oneOf: [{ type: 'object' }, { type: 'object[]' }, { type: 'unknown' }],
     example: `Object e.g. {} OR array of objects e.g. [{}].`,
   })
   body?: object | object[] | unknown;

@@ -20,7 +20,11 @@ export function ApiPropertyEnum(
   propertyName: string,
   { isArray = false, isOptional = false, enumName = '' } = {},
 ) {
-  const apiPropertyOptions: ApiPropertyOptions = { enum: type, isArray };
+  const apiPropertyOptions: ApiPropertyOptions = {
+    enum: type,
+    isArray,
+    enumName: '',
+  };
   if (enumName && enumName.length > 0) {
     apiPropertyOptions.description = enumName;
     apiPropertyOptions.enumName = enumName;
