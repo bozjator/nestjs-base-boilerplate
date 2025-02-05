@@ -47,7 +47,7 @@ export class UserService {
    * @param userId Id of the user to verify.
    */
   private async verifyUserExistence(userId: number): Promise<void> {
-    const user = await this.findUserById(userId);
+    const user = await this.findUserById(userId, false);
     if (!user)
       throw new NotFoundException(
         MessageHelper.replaceParameters(ApiMessages.OBJECT_NOT_FOUND, 'User'),
@@ -58,13 +58,16 @@ export class UserService {
    * Get user by where condition.
    *
    * @param where Query parameters.
+   * @param includeUserRoles Should include user roles?
    * @returns User object or null.
    */
-  private async findUserWhere(where: any): Promise<UserEntity | null> {
-    const user = await this.userEntity.findOne<UserEntity>({
-      include: [{ model: UserRoleEntity }],
-      where,
-    });
+  private async findUserWhere(
+    where: any,
+    includeUserRoles: boolean,
+  ): Promise<UserEntity | null> {
+    const query: any = { where };
+    if (includeUserRoles) query.include = [{ model: UserRoleEntity }];
+    const user = await this.userEntity.findOne<UserEntity>(query);
     return user ? user.get({ plain: true }) : null;
   }
 
@@ -72,22 +75,30 @@ export class UserService {
    * Get user by id.
    *
    * @param id Id of the user to get.
+   * @param includeUserRoles Optionally include user roles (default: true).
    * @returns User object or null.
    */
-  async findUserById(id: number): Promise<UserEntity | null> {
+  async findUserById(
+    id: number,
+    includeUserRoles: boolean = true,
+  ): Promise<UserEntity | null> {
     const where = { id };
-    return await this.findUserWhere(where);
+    return await this.findUserWhere(where, includeUserRoles);
   }
 
   /**
    * Get user by email.
    *
    * @param email Email of the user to get.
+   * @param includeUserRoles Optionally include user roles (default: true).
    * @returns User object or null.
    */
-  async findUserByEmail(email: string): Promise<UserEntity | null> {
+  async findUserByEmail(
+    email: string,
+    includeUserRoles: boolean = true,
+  ): Promise<UserEntity | null> {
     const where = { [USER_COLUMN.email]: email };
-    return await this.findUserWhere(where);
+    return await this.findUserWhere(where, includeUserRoles);
   }
 
   /**
@@ -181,7 +192,7 @@ export class UserService {
    * @returns Id of the new user.
    */
   async createUser(userReg: UserRegistration): Promise<number> {
-    const existingUser = await this.findUserByEmail(userReg.email);
+    const existingUser = await this.findUserByEmail(userReg.email, false);
     if (existingUser) throw new ConflictException(AuthMessages.USER_EXISTS);
 
     const newUser: UserEntityProperties = {
