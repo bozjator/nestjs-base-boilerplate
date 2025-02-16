@@ -6,10 +6,11 @@ import { LoggerDatabaseTransport } from './logger-database-transport';
 import { LoggerInfoObject } from './models/logger-info-object.model';
 import { Environment } from 'src/config/environment.enum';
 import { MONITORING_SECRET_HEADER_NAME } from 'src/monitoring/decorators/monitoring-auth-guard.decorator';
+import { LoggerLevel } from './models/logger-level.enum';
 
 /**
  * Logger for printing log messages into a console and storing them into the
- * database. Messages are printed into a console only in dvelopment environment.
+ * database. Messages are printed into a console only in development environment.
  */
 @Injectable()
 export class AppLoggerService {
@@ -60,7 +61,7 @@ export class AppLoggerService {
     blue: (value: string) => `\x1b[34m${value}\x1b[0m`,
   };
 
-  private getFormatedConsoleLog(data: winston.Logform.TransformableInfo) {
+  private getFormattedConsoleLog(data: winston.Logform.TransformableInfo) {
     const dateTime = new Date(data.timestamp as string);
     const timestamp = new Intl.DateTimeFormat('sl', {
       dateStyle: 'short',
@@ -78,10 +79,10 @@ export class AppLoggerService {
     let infoColored: string;
     let loggerNameColored: string;
 
-    if (data.level.indexOf('error') !== -1) {
+    if (data.level.indexOf(LoggerLevel.error) !== -1) {
       infoColored = this.color.red(info);
       loggerNameColored = this.color.red(loggerName);
-    } else if (data.level.indexOf('info') !== -1) {
+    } else if (data.level.indexOf(LoggerLevel.info) !== -1) {
       infoColored = this.color.green(info);
       loggerNameColored = this.color.green(loggerName);
     } else {
@@ -101,7 +102,7 @@ export class AppLoggerService {
     // Add console logging in development environment.
     if (this.isEnvDevelopment) {
       const consoleLogFormat = format.printf((data) =>
-        this.getFormatedConsoleLog(data),
+        this.getFormattedConsoleLog(data),
       );
       loggerTransports.push(
         new transports.Console({

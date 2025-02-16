@@ -1,9 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MonitoringService } from './monitoring.service';
 import { MonitoringGeneral } from './dtos/monitoring-general.dto';
-import { MonitoringLogs } from './dtos/monitoring-logs.dto';
 import { MonitoringAuthGuard } from './decorators/monitoring-auth-guard.decorator';
+import { LoggerLogListQuery } from './models/logger-log-list.query';
+import { LoggerLogList } from './dtos/logger-log-list.dto';
 
 @UseGuards(MonitoringAuthGuard)
 @ApiTags('monitoring')
@@ -19,9 +20,11 @@ export class MonitoringController {
   }
 
   @ApiOperation({ summary: 'Get logger logs.' })
-  @ApiOkResponse({ type: MonitoringLogs })
+  @ApiOkResponse({ type: LoggerLogList })
   @Get('logs')
-  async getMonitoringLoggerLogs(): Promise<MonitoringLogs> {
-    return await this.monitoringService.getMonitoringLoggerLogs();
+  async getMonitoringLoggerLogs(
+    @Query() query: LoggerLogListQuery,
+  ): Promise<LoggerLogList> {
+    return await this.monitoringService.getMonitoringLoggerLogs(query);
   }
 }

@@ -1,12 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ConfigType } from '@nestjs/config';
+import { WhereOptions } from 'sequelize';
 import * as fs from 'fs/promises';
-import { LoggerEntity } from 'src/logger/entities/logger.entity';
+import {
+  COLUMN_LOGGER,
+  LoggerColumnKeys,
+  LoggerEntity,
+} from 'src/logger/entities/logger.entity';
 import { MonitoringGeneral } from './dtos/monitoring-general.dto';
-import { MonitoringLogs } from './dtos/monitoring-logs.dto';
 import { LoggerLog } from './dtos/logger-log.dto';
 import { LoggerDBTransportErrorLog } from './dtos/logger-db-transport-error-log.dto';
+import { LoggerLogListQuery } from './models/logger-log-list.query';
+import { LoggerLogList } from './dtos/logger-log-list.dto';
 import AppConfig from '../config/app.config';
 
 @Injectable()
@@ -73,8 +79,39 @@ export class MonitoringService {
     return new MonitoringGeneral(dbTransportErrorLogs);
   }
 
-  async getMonitoringLoggerLogs(): Promise<MonitoringLogs> {
-    const loggerLogs = await this.loggerEntity.findAll();
-    return new MonitoringLogs(loggerLogs);
+  async getMonitoringLoggerLogs(
+    query: LoggerLogListQuery,
+  ): Promise<LoggerLogList> {
+    const offset = (query.pageNumber - 1) * query.pageItems;
+    const limit = query.pageItems;
+
+    const where: WhereOptions = {};
+
+    // Add filter properties.
+    const queryProperties: (keyof LoggerColumnKeys)[] = [
+      'level',
+      'context',
+      'requestUrl',
+      'requestIp',
+      'responseStatusCode',
+      'requestMethod',
+      'requestOrigin',
+      'requestReferer',
+    ];
+    queryProperties.forEach((property) => {
+      if (query[property]) where[COLUMN_LOGGER[property]] = query[property];
+    });
+
+    const result = await this.loggerEntity.findAndCountAll({
+      where,
+      offset: offset < 0 ? 0 : offset,
+      limit: limit < 0 ? 0 : limit,
+      order: [[query.sortColumn, query.sortOrder]],
+    });
+
+    return {
+      totalCount: result.count,
+      result: result.rows.map((log) => new LoggerLog(log)),
+    };
   }
 }

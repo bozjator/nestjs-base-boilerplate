@@ -19,6 +19,29 @@ export type LoggerEntityProperties = {
   [K in LoggerEntityKeys]?: LoggerEntity[K] | null;
 };
 
+export type LoggerColumnKeys = Pick<
+  LoggerEntity,
+  | 'level'
+  | 'context'
+  | 'responseStatusCode'
+  | 'requestIp'
+  | 'requestMethod'
+  | 'requestUrl'
+  | 'requestOrigin'
+  | 'requestReferer'
+>;
+export const COLUMN_LOGGER: Record<keyof LoggerColumnKeys, keyof LoggerEntity> =
+  {
+    level: 'level',
+    context: 'context',
+    responseStatusCode: 'responseStatusCode',
+    requestIp: 'requestIp',
+    requestMethod: 'requestMethod',
+    requestUrl: 'requestUrl',
+    requestOrigin: 'requestOrigin',
+    requestReferer: 'requestReferer',
+  };
+
 @Table({ tableName: 'logger' })
 export class LoggerEntity extends Model {
   @Index
