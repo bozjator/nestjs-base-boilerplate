@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize-typescript';
 import { ConfigType } from '@nestjs/config';
-import { WhereOptions } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import * as fs from 'fs/promises';
 import {
   COLUMN_LOGGER,
@@ -13,10 +14,22 @@ import { LoggerLog } from './dtos/logger-log.dto';
 import { LoggerDBTransportErrorLog } from './dtos/logger-db-transport-error-log.dto';
 import { LoggerLogListQuery } from './models/logger-log-list.query';
 import { LoggerLogList } from './dtos/logger-log-list.dto';
+import { LoggerLogListFilters } from './dtos/logger-log-list-filters.dto';
 import AppConfig from '../config/app.config';
 
 @Injectable()
 export class MonitoringService {
+  private loggerLogsFilterProperties: (keyof LoggerColumnKeys)[] = [
+    'level',
+    'context',
+    'requestUrl',
+    'requestIp',
+    'responseStatusCode',
+    'requestMethod',
+    'requestOrigin',
+    'requestReferer',
+  ];
+
   constructor(
     @InjectModel(LoggerEntity)
     private readonly loggerEntity: typeof LoggerEntity,
@@ -86,19 +99,7 @@ export class MonitoringService {
     const limit = query.pageItems;
 
     const where: WhereOptions = {};
-
-    // Add filter properties.
-    const queryProperties: (keyof LoggerColumnKeys)[] = [
-      'level',
-      'context',
-      'requestUrl',
-      'requestIp',
-      'responseStatusCode',
-      'requestMethod',
-      'requestOrigin',
-      'requestReferer',
-    ];
-    queryProperties.forEach((property) => {
+    this.loggerLogsFilterProperties.forEach((property) => {
       if (query[property]) where[COLUMN_LOGGER[property]] = query[property];
     });
 
@@ -113,5 +114,31 @@ export class MonitoringService {
       totalCount: result.count,
       result: result.rows.map((log) => new LoggerLog(log)),
     };
+  }
+
+  async getMonitoringLoggerLogsFilters(): Promise<LoggerLogListFilters> {
+    const filters: LoggerLogListFilters = {
+      level: [],
+      context: [],
+      requestUrl: [],
+      requestIp: [],
+      responseStatusCode: [],
+      requestMethod: [],
+      requestOrigin: [],
+      requestReferer: [],
+    };
+
+    for (const property of this.loggerLogsFilterProperties) {
+      const results = await this.loggerEntity.findAll({
+        attributes: [
+          [Sequelize.fn('DISTINCT', Sequelize.col(property)), property],
+        ],
+        where: { [property]: { [Op.ne]: null } },
+        raw: true,
+      });
+      filters[property as any] = results.map((result) => result[property]);
+    }
+
+    return filters;
   }
 }

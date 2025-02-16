@@ -5,6 +5,7 @@ import { MonitoringGeneral } from './dtos/monitoring-general.dto';
 import { MonitoringAuthGuard } from './decorators/monitoring-auth-guard.decorator';
 import { LoggerLogListQuery } from './models/logger-log-list.query';
 import { LoggerLogList } from './dtos/logger-log-list.dto';
+import { LoggerLogListFilters } from './dtos/logger-log-list-filters.dto';
 
 @UseGuards(MonitoringAuthGuard)
 @ApiTags('monitoring')
@@ -26,5 +27,12 @@ export class MonitoringController {
     @Query() query: LoggerLogListQuery,
   ): Promise<LoggerLogList> {
     return await this.monitoringService.getMonitoringLoggerLogs(query);
+  }
+
+  @ApiOperation({ summary: 'Get logger logs filters.' })
+  @ApiOkResponse({ type: LoggerLogListFilters })
+  @Get('logs-filters')
+  async getMonitoringLoggerLogsFilters(): Promise<LoggerLogListFilters> {
+    return await this.monitoringService.getMonitoringLoggerLogsFilters();
   }
 }
