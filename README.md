@@ -135,4 +135,5 @@ There is the env variable `API_LOGGER_DB_TRANSPORT_ERROR_PATH` which holds the p
 
 To be able to access monitoring endpoints, you must set proper header on a request.  
 The header name is the ona that is set in the `MonitoringAuthGuard` guard, see the `MONITORING_SECRET_HEADER_NAME` constant.  
-The value that you must send for this header is the one that you set in the env variable `API_MONITORING_SECRET`.
+The value that you must send for this header is the one that you set in the env variable `API_MONITORING_SECRET`.  
+Use [Logboard](https://github.com/bozjator/logboard) project to see logs.
